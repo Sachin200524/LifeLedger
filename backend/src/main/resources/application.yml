@@ -1,0 +1,80 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: lifeledger-backend
+  profiles:
+    active: h2
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+  task:
+    scheduling:
+      pool:
+        size: 5
+
+---
+# MySQL Profile (Default)
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/lifeledger_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+
+---
+# H2 Fallback/Test Profile
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    url: jdbc:h2:file:./storage/h2db/lifeledger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+
+---
+# Application Security and Vault Config
+app:
+  jwt:
+    secret: ${JWT_SECRET:4c8b9d3f1a2e7c5b6a9d0f3e2b1c4a5d8e7f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+  encryption:
+    master-key: ${VAULT_ENCRYPTION_KEY:LifeLedgerAes256MasterVaultKey2026Secured!}
+    algorithm: AES/GCM/NoPadding
+    iv-length-bytes: 12
+    tag-length-bits: 128
+  storage:
+    vault-dir: ${STORAGE_VAULT_DIR:./storage/vault}
+    evidence-dir: ${STORAGE_EVIDENCE_DIR:./storage/evidence}
+    max-file-size-bytes: 52428800 # 50 MB

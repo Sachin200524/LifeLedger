@@ -1,0 +1,295 @@
+{
+  "info": {
+    "name": "LifeLedger+ API Collection",
+    "_postman_id": "lifeledger-api-v1",
+    "description": "Comprehensive REST API Collection for LIFELEDGER+ Secure Digital Legacy Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api", "type": "string" },
+    { "key": "userToken", "value": "", "type": "string" },
+    { "key": "nomineeToken", "value": "", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Dr. Alexander Stone\",\n  \"email\": \"alex@lifeledger.com\",\n  \"password\": \"Alex@123456\",\n  \"confirmPassword\": \"Alex@123456\",\n  \"phone\": \"+1-555-0199\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Login User (Vault Owner)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@lifeledger.com\",\n  \"password\": \"User@123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login Nominee",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nominee@lifeledger.com\",\n  \"password\": \"Nominee@123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@lifeledger.com\",\n  \"password\": \"Admin@123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Documents & Vault",
+      "item": [
+        {
+          "name": "List User Documents",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/documents", "host": ["{{baseUrl}}"], "path": ["documents"] }
+          }
+        },
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/documents/categories", "host": ["{{baseUrl}}"], "path": ["documents", "categories"] }
+          }
+        },
+        {
+          "name": "List Folders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/documents/folders", "host": ["{{baseUrl}}"], "path": ["documents", "folders"] }
+          }
+        },
+        {
+          "name": "Upload Document (Multipart AES-256)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "" },
+                { "key": "title", "value": "Property Deed 2026", "type": "text" },
+                { "key": "categoryId", "value": "3", "type": "text" },
+                { "key": "notes", "value": "Stored in master fireproof safe", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/documents/upload", "host": ["{{baseUrl}}"], "path": ["documents", "upload"] }
+          }
+        },
+        {
+          "name": "Download Decrypted Document",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/documents/1/download", "host": ["{{baseUrl}}"], "path": ["documents", "1", "download"] }
+          }
+        },
+        {
+          "name": "Preview Decrypted Document Stream",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/documents/1/preview", "host": ["{{baseUrl}}"], "path": ["documents", "1", "preview"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Nominees & Trusted Contacts",
+      "item": [
+        {
+          "name": "List Nominees",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/nominees", "host": ["{{baseUrl}}"], "path": ["nominees"] }
+          }
+        },
+        {
+          "name": "Designate Nominee",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarah Jenkins\",\n  \"email\": \"sarah@example.com\",\n  \"phone\": \"+1-555-0188\",\n  \"relationship\": \"SPOUSE\",\n  \"notes\": \"Primary estate executor\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/nominees", "host": ["{{baseUrl}}"], "path": ["nominees"] }
+          }
+        },
+        {
+          "name": "Verify / Accept Nominee Invitation",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/nominees/accept-invite?token=SAMPLE_TOKEN", "host": ["{{baseUrl}}"], "path": ["nominees", "accept-invite"], "query": [{ "key": "token", "value": "SAMPLE_TOKEN" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Policy Engine",
+      "item": [
+        {
+          "name": "List Policies",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/policies", "host": ["{{baseUrl}}"], "path": ["policies"] }
+          }
+        },
+        {
+          "name": "Create Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomineeId\": 1,\n  \"name\": \"Medical Directive & Will Policy\",\n  \"description\": \"Emergency health and insurance file release upon hospital admittance\",\n  \"documentIds\": [1, 2],\n  \"waitingPeriodHours\": 24,\n  \"approvalType\": \"OWNER_OR_ADMIN\",\n  \"accessDurationHours\": 48\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/policies", "host": ["{{baseUrl}}"], "path": ["policies"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Emergency Access Workflow",
+      "item": [
+        {
+          "name": "Nominee Submit Emergency Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{nomineeToken}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "policyId", "value": "1", "type": "text" },
+                { "key": "reason", "value": "Hospital medical admittance - immediate policy retrieval required", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/emergency/request", "host": ["{{baseUrl}}"], "path": ["emergency", "request"] }
+          }
+        },
+        {
+          "name": "Owner / Admin Review Emergency Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approve\": true,\n  \"reviewNotes\": \"Emergency confirmed by family physician.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/emergency/requests/1/review", "host": ["{{baseUrl}}"], "path": ["emergency", "requests", "1", "review"] }
+          }
+        },
+        {
+          "name": "Nominee Get Accessible Documents",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{nomineeToken}}" }],
+            "url": { "raw": "{{baseUrl}}/emergency/accessible-documents", "host": ["{{baseUrl}}"], "path": ["emergency", "accessible-documents"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Scoring, Reports & Audit",
+      "item": [
+        {
+          "name": "Get Digital Readiness Score (0-100)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/scores/readiness", "host": ["{{baseUrl}}"], "path": ["scores", "readiness"] }
+          }
+        },
+        {
+          "name": "Get Digital Risk Radar",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/scores/risk", "host": ["{{baseUrl}}"], "path": ["scores", "risk"] }
+          }
+        },
+        {
+          "name": "Download PDF Audit Report",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": { "raw": "{{baseUrl}}/reports/audit-pdf", "host": ["{{baseUrl}}"], "path": ["reports", "audit-pdf"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Admin Console",
+      "item": [
+        {
+          "name": "Admin Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["admin", "dashboard"] }
+          }
+        },
+        {
+          "name": "Admin List Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/users", "host": ["{{baseUrl}}"], "path": ["admin", "users"] }
+          }
+        }
+      ]
+    }
+  ]
+}
